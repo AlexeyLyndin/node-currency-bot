@@ -6,4 +6,4 @@ const registrator = require("./routeRegistrator");
 const tg = new Telegram.Telegram(process.env.BOT_KEY, {
     workers: 4
 });
-registrator.registrate(tg);
+registrator.registrate(tg.router);

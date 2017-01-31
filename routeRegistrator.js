@@ -2,12 +2,26 @@ const fs = require("fs");
 const _ = require("lodash");
 const controllersDirectory = "./controllers/";
 
+const Telegram = require('telegram-node-bot')
+const TextCommand = Telegram.TextCommand
+
 class RouteRegistrator {
     registrate(router) {
         getFilesInDirectory()
             .then((files) => {
                 _.each(files, (fileName) => {
-                   // require controller, getRoutes
+                    try {
+                        let controllerPath = controllersDirectory + fileName;
+                        let controller = require(controllerPath);
+                        _.keys(controller.routes(), (key) =>{
+                            router.when(
+                                new TextCommand(key,key),
+                                
+                            );
+                        });
+                    } catch (e) {
+
+                    }
                 });
             });
     }

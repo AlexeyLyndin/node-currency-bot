@@ -12,7 +12,7 @@ class CurrencyController extends TelegramBaseController {
 
     get routes() {
         return {
-            "getCurrency": "getCurrency"
+            "/currency": "getCurrency"
         }
     }
 }
@@ -28,7 +28,4 @@ const getUdsCurrency = () => {
     });
 };
 
-module.exports = {
-    controller: new CurrencyController(),
-    command: "getCurrency"
-}
+module.exports = new CurrencyController();
