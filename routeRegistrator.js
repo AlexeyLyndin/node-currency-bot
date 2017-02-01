@@ -18,7 +18,7 @@ class RouteRegistrator {
                         _.each(_.keys(routes), (key) => {
                             router.when(
                                 new TextCommand(key, key),
-                                instance
+                                new controller()
                             );
                         });
                     } catch (e) {
