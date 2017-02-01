@@ -22,7 +22,7 @@ class RouteRegistrator {
                             );
                         });
                     } catch (e) {
-                        console.error('Unable to register ${fileName}')
+                        console.error(`Unable to register ${fileName}`);
                     }
                 });
             });
