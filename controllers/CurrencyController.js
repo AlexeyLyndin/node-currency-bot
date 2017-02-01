@@ -5,8 +5,12 @@ const TelegramBaseController = Telegram.TelegramBaseController;
 class CurrencyController extends TelegramBaseController {
 
     getCurrency($) {
-        getUdsCurrency().then((usd) => {
+        getUdsCurrency()
+        .then((usd) => {
             $.sendMessage(usd);
+        })
+        .catch((err) => {
+            console.error(err);
         });
     }
 
@@ -23,6 +27,8 @@ const getUdsCurrency = () => {
             if (!err && response.statusCode === 200) {
                 console.log(body);
                 resolve(body);
+            }else{
+                reject(err);
             }
         });
     });
