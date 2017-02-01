@@ -14,15 +14,15 @@ class RouteRegistrator {
                         let controllerPath = controllersDirectory + fileName;
                         let controller = require(controllerPath);
                         let instance = new controller();
-                        let routes = instance.routes();
-                        _.keys(routes, (key) => {
+                        let routes = instance.routes;
+                        _.each(_.keys(routes), (key) => {
                             router.when(
-                                new TextCommand(key, routes[key]),
+                                new TextCommand(key, key),
                                 instance
                             );
                         });
                     } catch (e) {
-
+                        console.error('Unable to register ${fileName}')
                     }
                 });
             });
