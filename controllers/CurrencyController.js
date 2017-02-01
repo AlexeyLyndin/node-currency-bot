@@ -28,4 +28,4 @@ const getUdsCurrency = () => {
     });
 };
 
-module.exports = new CurrencyController();
+module.exports = CurrencyController;

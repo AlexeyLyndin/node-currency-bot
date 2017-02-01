@@ -13,10 +13,12 @@ class RouteRegistrator {
                     try {
                         let controllerPath = controllersDirectory + fileName;
                         let controller = require(controllerPath);
-                        _.keys(controller.routes(), (key) =>{
+                        let instance = new controller();
+                        let routes = instance.routes();
+                        _.keys(routes, (key) => {
                             router.when(
-                                new TextCommand(key,key),
-                                
+                                new TextCommand(key, routes[key]),
+                                instance
                             );
                         });
                     } catch (e) {
