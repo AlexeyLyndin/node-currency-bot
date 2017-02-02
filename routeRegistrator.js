@@ -10,13 +10,13 @@ class RouteRegistrator {
         getFilesInDirectory()
             .then((files) => {
                 _.each(files, (fileName) => {
-                    registrateController(fileName);
+                    registrateController(router, fileName);
                 });
             });
     }
 }
 
-const registrateController = (controllerName) => {
+const registrateController = (router, controllerName) => {
     try {
         let controllerPath = controllersDirectory + controllerName;
         let controller = require(controllerPath);
