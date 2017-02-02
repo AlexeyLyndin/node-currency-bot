@@ -7,7 +7,8 @@ class CurrencyController extends TelegramBaseController {
     getCurrency($) {
         getUdsCurrency()
             .then((usd) => {
-                $.sendMessage(usd);
+                let result = `${usd.Cur_Name} ${usd.Cur_OfficialRate}`;
+                $.sendMessage(result);
             })
             .catch((err) => {
                 console.error(err);

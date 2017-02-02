@@ -10,22 +10,26 @@ class RouteRegistrator {
         getFilesInDirectory()
             .then((files) => {
                 _.each(files, (fileName) => {
-                    try {
-                        let controllerPath = controllersDirectory + fileName;
-                        let controller = require(controllerPath);
-                        let instance = new controller();
-                        let routes = instance.routes;
-                        _.each(_.keys(routes), (key) => {
-                            router.when(
-                                new TextCommand(key, key),
-                                new controller()
-                            );
-                        });
-                    } catch (e) {
-                        console.error(`Unable to register ${fileName}`);
-                    }
+                    registrateController(fileName);
                 });
             });
+    }
+}
+
+const registrateController = (controllerName) => {
+    try {
+        let controllerPath = controllersDirectory + controllerName;
+        let controller = require(controllerPath);
+        let instance = new controller();
+        let routes = instance.routes;
+        _.each(_.keys(routes), (key) => {
+            router.when(
+                new TextCommand(key, key),
+                new controller()
+            );
+        });
+    } catch (e) {
+        console.error(`Unable to register ${controllerName}`);
     }
 }
 
