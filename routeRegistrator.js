@@ -28,6 +28,8 @@ const registrateController = (router, controllerName) => {
                 new controller()
             );
         });
+
+
     } catch (e) {
         console.error(`Unable to register ${controllerName}`);
     }
