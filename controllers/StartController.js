@@ -27,7 +27,7 @@ class StartController extends TelegramBaseController {
                             menu: [{
                                 text: 'Are you kidding?',
                                 callback: (callbackQuery, message) => {
-
+                                    $.sendMessage("123");
                                 }
                             }]
 
