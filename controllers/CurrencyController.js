@@ -8,6 +8,7 @@ const urls = ["http://www.nbrb.by/API/ExRates/Rates/145", "http://www.nbrb.by/AP
 class CurrencyController extends TelegramBaseController {
 
     getCurrency($) {
+        console.log("got request");
         getDefaultCurrencies().then((results) => {
             console.log(results);
             let response = "";
@@ -20,7 +21,7 @@ class CurrencyController extends TelegramBaseController {
 
     get routes() {
         return {
-            "/currency": "getCurrency"
+            "НБРБ": "getCurrency"
         }
     }
 }

@@ -6,42 +6,33 @@ const TelegramBaseController = Telegram.TelegramBaseController;
 class StartController extends TelegramBaseController {
 
     startMenu($) {
-        $.runInlineMenu({
-            layout: 2, //some layouting here
-            method: 'sendMessage', //here you must pass the method name
-            params: ['text'], //here you must pass the parameters for that method
-            menu: [
-                {
-                    text: '1', //text of the button
-                    /*callback: (callbackQuery, message) => { //to your callback will be passed callbackQuery and response from method
-                        console.log(message);
-                    }*/
+        const mainMenu = () =>{
+            $.runMenu({
+                message: 'Выберите источник',
+                layout: 2,
+                'НБРБ': () =>{
+                    console.log('НБРБ')
+                    mainMenu()
                 },
-                {
-                    text: 'Exit',
-                    message: 'Are you sure?',
-                    layout: 2,
-                    menu: [ //Sub menu (current message will be edited)
-                        {
-                            text: 'Yes!',
-                            menu: [{
-                                text: 'Are you kidding?',
-                                callback: (callbackQuery, message) => {
-                                    $.sendMessage("123");
-                                }
-                            }]
-
-                        },
-                        {
-                            text: 'No!',
-                            callback: () => {
-                                console.log(arguments)
-                            }
-                        }
-                    ]
+                'Другое': () =>{
+                    otherBanks()
                 }
-            ]
-        })
+            })
+        }
+        const otherBanks = () =>{
+            $.runMenu({
+                message: 'Выберите банк',
+                layout: 2,
+                'Мой банк': () => {
+                    console.log('мой банк')
+                    otherBanks()
+                },
+                'Назад': () =>{
+                    mainMenu()
+                }
+            })
+        }
+        mainMenu()
     }
     get routes() {
         return {
@@ -49,5 +40,8 @@ class StartController extends TelegramBaseController {
         }
     }
 }
+
+let that = this;
+
 
 module.exports = StartController;
