@@ -1,12 +1,42 @@
 const _ = require("lodash");
 const req = require("tiny_request");
 const Telegram = require("telegram-node-bot");
+const BanksRepository = require('../repository/BanksRepository');
 const TelegramBaseController = Telegram.TelegramBaseController;
 const urls = ["http://www.nbrb.by/API/ExRates/Rates/145", "http://www.nbrb.by/API/ExRates/Rates/292", "http://www.nbrb.by/API/ExRates/Rates/298"];
 
 class StartController extends TelegramBaseController {
 
+    constructor(data) {
+        super()
+        this.repository = new BanksRepository();
+        this.repository.getBanksData().then((data) => {
+            this.data = data
+        })
+    }
+
     startMenu($) {
+        let bankNames = _.map(this.data, (bankData) => {
+            return bankData.bankName
+        })
+        let otherBanksMenu = {
+            message: 'Выберите банк',
+            layout: 3
+        }
+        bankNames.forEach((name) => {
+            otherBanksMenu[name.toString()] = ($) => {
+                console.log("callback")
+                this.getBankDataByName($.message.text).then(foundBank => {
+                    $.sendMessage(foundBank).then(() => {
+                        otherBanks()
+                    })
+                })
+            }
+        })
+        otherBanksMenu['Назад'] = () => {
+            mainMenu()
+        }
+
         const mainMenu = () => {
             $.runMenu({
                 message: 'Выберите источник',
@@ -30,19 +60,23 @@ class StartController extends TelegramBaseController {
             })
         }
         const otherBanks = () => {
-            $.runMenu({
-                message: 'Выберите банк',
-                layout: 2,
-                'Мой банк': () => {
-                    console.log('мой банк')
-                    otherBanks()
-                },
-                'Назад': () => {
-                    mainMenu()
-                }
-            })
+            $.runMenu(otherBanksMenu)
         }
         mainMenu()
+    }
+
+    getBankDataByName(bankName) {
+        return new Promise((resolve, reject) => {
+            console.log(bankName)
+            let foundBank = _.find(this.data, (bank) => {
+                return bank.bankName === bankName
+            })
+
+            console.log(foundBank)
+
+            resolve(foundBank)
+        })
+
     }
     get routes() {
         return {

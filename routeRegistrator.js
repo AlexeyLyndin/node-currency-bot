@@ -32,6 +32,8 @@ const registrateController = (router, controllerName) => {
 
     } catch (e) {
         console.error(`Unable to register ${controllerName}`);
+        console.error(`Unable to register ${e}`);
+
     }
 }
 
