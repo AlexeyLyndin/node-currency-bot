@@ -10,24 +10,25 @@ class StartController extends TelegramBaseController {
     constructor(data) {
         super()
         this.repository = new BanksRepository();
-        this.repository.getBanksData().then((data) => {
-            this.data = data
-        })
     }
 
     startMenu($) {
-        let bankNames = _.map(this.data, (bankData) => {
-            return bankData.bankName
-        })
+        let bankNames = getBankNamesFormEnv()
+
         let otherBanksMenu = {
             message: 'Выберите банк',
             layout: 3
         }
         bankNames.forEach((name) => {
+            console.log(name)
             otherBanksMenu[name.toString()] = ($) => {
-                console.log("callback")
-                this.getBankDataByName($.message.text).then(foundBank => {
-                    $.sendMessage(foundBank).then(() => {
+                this.repository.getBanksData($.message.text).then(foundBank => {
+                    let response = ""
+                    response += `USD Покупка/Продажа - ${foundBank.usdBuy}/${foundBank.usdSell}\n`
+                    response += `EUR Покупка/Продажа - ${foundBank.euroBuy}/${foundBank.euroSell}\n`
+                    response += `RUB Покупка/Продажа - ${foundBank.rubBuy}/${foundBank.rubSell}\n`
+                    console.log(response)
+                    $.sendMessage(response).then(() => {
                         otherBanks()
                     })
                 })
@@ -65,19 +66,6 @@ class StartController extends TelegramBaseController {
         mainMenu()
     }
 
-    getBankDataByName(bankName) {
-        return new Promise((resolve, reject) => {
-            console.log(bankName)
-            let foundBank = _.find(this.data, (bank) => {
-                return bank.bankName === bankName
-            })
-
-            console.log(foundBank)
-
-            resolve(foundBank)
-        })
-
-    }
     get routes() {
         return {
             "/start": "startMenu"
@@ -108,13 +96,30 @@ const performRequest = (url) => {
     return new Promise((resolve, reject) => {
         req.get(request, (body, response, err) => {
             if (!err && response.statusCode === 200) {
-                //console.log(body);
                 resolve(body);
             } else {
                 reject(err);
             }
         });
     });
+}
+
+const getBankNamesFormEnv = () => {
+    const bankPrefix = "BANK_NAME_"
+    let index = 1
+    let bankName = ""
+    let bankNames = []
+    do {
+        let envBankName = bankPrefix + index
+        bankName = process.env[envBankName]
+        if (bankName) {
+            bankNames.push(bankName)
+        }
+        index++
+
+    } while (bankName)
+
+    return bankNames
 }
 
 

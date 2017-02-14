@@ -41,7 +41,6 @@ const parser = new htmlparser.Parser({
         if (rowTag) {
             if (bankNameTag) {
                 bankDataObj.bankName = text;
-                //console.log(`Bank name is ${text}`);
                 bankNameTag = "";
                 return;
             }
@@ -62,14 +61,13 @@ const parser = new htmlparser.Parser({
         }
     },
     onend: () => {
-        console.log("end");
+        console.log('end')
         resolve(bankData);
     }
 }, { decodeEntities: true });
 
 const parseValues = (rawString) => {
     var split = rawString.split(';');
-    //console.log(split);
     if (split.length !== 8) { return; }
     bankDataObj.usdBuy = split[2];
     bankDataObj.usdSell = split[3];
@@ -92,12 +90,12 @@ const getHtml = () => {
                 error = new Error(`Request Failed.\n` +
                     `Status Code: ${statusCode}`);
             }
+
             if (error) {
                 console.log(error.message);
                 response.resume();
                 return;
             }
-
 
             response.setEncoding('utf8');
             response.pipe(parser);
@@ -107,10 +105,25 @@ const getHtml = () => {
     });
 }
 
+const getDataFromCache = (bankName) => {
+    return null
+}
+
 class BanksRepository {
-    getBanksData() {
-        return getHtml()
+    getBanksData(bankName) {
+        return new Promise((res, rej) => {
+            let bankData = getDataFromCache(bankName)
+            if (!bankData) {
+                getHtml().then((banks) => {
+                    bankData = _.find(banks, (bank) => {
+                        return bank.bankName === bankName
+                    })
+                    res(bankData)
+                })
+            }
+        })
     }
+
 }
 
 module.exports = BanksRepository;
