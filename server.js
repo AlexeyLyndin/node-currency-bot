@@ -3,8 +3,9 @@ const Telegram = require("telegram-node-bot");
 const TelegramBaseController = Telegram.TelegramBaseController;
 const TextCommand = Telegram.TextCommand;
 const registrator = require("./routeRegistrator");
+
 const tg = new Telegram.Telegram(process.env.BOT_KEY, {
-    workers: 1
+    workers: 2
 });
 
 registrator.registrate(tg.router);

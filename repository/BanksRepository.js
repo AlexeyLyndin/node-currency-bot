@@ -9,25 +9,21 @@ let currTag = "";
 
 let bankData = [];
 let bankDataObj;
-let currencyString = "";
+let currencyArray = [];
 
 let resolve, reject;
 
 const parser = new htmlparser.Parser({
     onopentag: (name, attribs) => {
-        if (name === "tr") {
-            if (attribs.class && attribs.class.includes("link")) {
+        if ("tr" === name) {
+            if (attribs['data-key']) {
                 bankDataObj = {};
                 rowTag = name;
-            } else {
-                rowTag = ""
             }
         }
         if ("span" === name) {
             if (attribs.class && attribs.class.includes("iconb")) {
                 bankNameTag = name;
-            } else {
-                bankNameTag = "";
             }
         }
         if ("span" === name) {
@@ -40,41 +36,42 @@ const parser = new htmlparser.Parser({
     ontext: (text) => {
         if (rowTag) {
             if (bankNameTag) {
-                bankDataObj.bankName = text;
-                bankNameTag = "";
-                return;
+                bankDataObj.bankName = text
             }
-            if (currTag) {
-                currencyString += `;${text.trim()}`;
-                currTag = "";
+            if (currTag && text) {
+                currencyArray.push(text)
             }
-
         }
+
     },
-    onclosetag: (tagname) => {
-        if (rowTag === tagname) {
-            rowTag = "";
-            bankNameTag = "";
-            parseValues(currencyString);
-            currencyString = "";
-            bankData.push(bankDataObj);
+    onclosetag: (tagName) => {
+        if (rowTag === tagName) {
+            // renew all temporary values
+            rowTag = ""
+            parseValues()
+            bankData.push(bankDataObj)
+            bankDataObj = {}
+            currencyArray = []
+        }
+        if (bankNameTag === tagName) {
+            bankNameTag = ""
+        }
+        if (currTag === tagName) {
+            currTag = ""
         }
     },
     onend: () => {
-        console.log('end')
         resolve(bankData);
     }
 }, { decodeEntities: true });
 
-const parseValues = (rawString) => {
-    var split = rawString.split(';');
-    if (split.length !== 8) { return; }
-    bankDataObj.usdBuy = split[2];
-    bankDataObj.usdSell = split[3];
-    bankDataObj.euroBuy = split[4];
-    bankDataObj.euroSell = split[5];
-    bankDataObj.rubBuy = split[6];
-    bankDataObj.rubSell = split[7];
+const parseValues = () => {
+    bankDataObj.usdBuy = currencyArray[0];
+    bankDataObj.usdSell = currencyArray[1];
+    bankDataObj.euroBuy = currencyArray[2];
+    bankDataObj.euroSell = currencyArray[3];
+    bankDataObj.rubBuy = currencyArray[4];
+    bankDataObj.rubSell = currencyArray[5];
 }
 
 const getHtml = () => {

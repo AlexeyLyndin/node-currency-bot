@@ -13,21 +13,19 @@ class StartController extends TelegramBaseController {
     }
 
     startMenu($) {
-        let bankNames = getBankNamesFormEnv()
+        let bankNames = getBankNamesFromEnv()
 
         let otherBanksMenu = {
             message: 'Выберите банк',
-            layout: 3
+            layout: 2
         }
         bankNames.forEach((name) => {
-            console.log(name)
-            otherBanksMenu[name.toString()] = ($) => {
+            otherBanksMenu[name] = ($) => {
                 this.repository.getBanksData($.message.text).then(foundBank => {
                     let response = ""
-                    response += `USD Покупка/Продажа - ${foundBank.usdBuy}/${foundBank.usdSell}\n`
-                    response += `EUR Покупка/Продажа - ${foundBank.euroBuy}/${foundBank.euroSell}\n`
-                    response += `RUB Покупка/Продажа - ${foundBank.rubBuy}/${foundBank.rubSell}\n`
-                    console.log(response)
+                    response += `USD Покупка/Продажа - ${foundBank.usdBuy} / ${foundBank.usdSell}\n`
+                    response += `EUR Покупка/Продажа - ${foundBank.euroBuy} / ${foundBank.euroSell}\n`
+                    response += `RUB Покупка/Продажа - ${foundBank.rubBuy} / ${foundBank.rubSell}\n`
                     $.sendMessage(response).then(() => {
                         otherBanks()
                     })
@@ -43,9 +41,7 @@ class StartController extends TelegramBaseController {
                 message: 'Выберите источник',
                 layout: 2,
                 'НБРБ': () => {
-                    console.log('НБРБ')
                     getDefaultCurrencies().then((results) => {
-                        console.log(results);
                         let response = "";
                         _.each(results, (result) => {
                             response += `${result.Cur_Abbreviation} - ${result.Cur_OfficialRate} \n`;
@@ -104,7 +100,7 @@ const performRequest = (url) => {
     });
 }
 
-const getBankNamesFormEnv = () => {
+const getBankNamesFromEnv = () => {
     const bankPrefix = "BANK_NAME_"
     let index = 1
     let bankName = ""
