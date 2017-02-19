@@ -9,3 +9,7 @@ const tg = new Telegram.Telegram(process.env.BOT_KEY, {
 });
 
 registrator.registrate(tg.router);
+
+
+
+

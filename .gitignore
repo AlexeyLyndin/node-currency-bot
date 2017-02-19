@@ -39,3 +39,4 @@ jspm_packages
 # Custom ignore
 .env
 .vscode
+redis

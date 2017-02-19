@@ -19,6 +19,7 @@
     "dotenv": "~4.0.0",
     "htmlparser2": "^3.9.2",
     "lodash": "~4.17.4",
+    "redis": "^2.6.5",
     "telegram-node-bot": "~4.0.5",
     "tiny_request": "~1.0.11"
   }
