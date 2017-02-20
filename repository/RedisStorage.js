@@ -9,13 +9,13 @@ class RedisStorage {
 
     constructor() {
         this.client = redis.createClient({
-            host: '0.0.0.0',
+            host: process.env.REDIS_HOST,
             port: process.env.REDIS_PORT,
             password: process.env.REDIS_PWD
         })
 
         this.listener = redis.createClient({
-            host: '0.0.0.0',
+            host: process.env.REDIS_HOST,
             port: process.env.REDIS_PORT,
             password: process.env.REDIS_PWD
         })
